@@ -16,7 +16,6 @@ import (
 	"time"
 )
 
-
 const (
 	Endpoint1 = "https://graphql.bitquery.io"
 	Endpoint2 = "https://streaming.bitquery.io/graphql"
@@ -25,8 +24,8 @@ const (
 // BitqueryModel interface easy to implement
 type BitqueryModel interface {
 	ToMap() map[string]any // input vars to map
-	Query() string // the query string
-	Endpoint() string // endpoint ("https://streaming.bitquery.io/graphql" or "https://graphql.bitquery.io")
+	Query() string         // the query string
+	Endpoint() string      // endpoint ("https://streaming.bitquery.io/graphql" or "https://graphql.bitquery.io")
 }
 
 var HttpClient *http.Client = &http.Client{Timeout: time.Second * 40}
@@ -46,7 +45,7 @@ func Do(apikey string, x BitqueryModel) ([]byte, error) {
 	}
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("X-API-KEY", apikey)
-	
+
 	response, err := HttpClient.Do(request)
 	if err != nil {
 		return nil, fmt.Errorf("the HTTP request failed with error %v", err)
@@ -86,8 +85,8 @@ func Unmarshal(apikey string, x BitqueryModel, ptr any) error {
 
 // Wrapper to extract 'data' field
 type Wrapper struct {
-	Data json.RawMessage `json:"data,omitempty"`
-	Errors Errors `json:"errors,omitempty"`
+	Data   json.RawMessage `json:"data,omitempty"`
+	Errors Errors          `json:"errors,omitempty"`
 }
 
 // Errors
