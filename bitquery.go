@@ -29,6 +29,8 @@ type BitqueryModel interface {
 	Endpoint() string // endpoint ("https://streaming.bitquery.io/graphql" or "https://graphql.bitquery.io")
 }
 
+var HttpClient *http.Client = &http.Client{Timeout: time.Second * 40}
+
 // Do gets json bytes
 func Do(apikey string, x BitqueryModel) ([]byte, error) {
 	q, err := json.Marshal(map[string]interface{}{
@@ -44,8 +46,8 @@ func Do(apikey string, x BitqueryModel) ([]byte, error) {
 	}
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("X-API-KEY", apikey)
-	client := &http.Client{Timeout: time.Second * 40}
-	response, err := client.Do(request)
+	
+	response, err := HttpClient.Do(request)
 	if err != nil {
 		return nil, fmt.Errorf("the HTTP request failed with error %v", err)
 	}
