@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -66,6 +67,9 @@ func Unmarshal(apikey string, x BitqueryModel, ptr any) error {
 	var wrapped Wrapper
 	err = json.Unmarshal(resp, &wrapped)
 	if err != nil {
+		if err != nil && strings.Contains(err.Error(), "invalid character '<'") {
+			return fmt.Errorf("resp: %v", string(resp))
+		}
 		return json.Unmarshal(resp, ptr)
 	}
 	if len(wrapped.Errors) != 0 {
